@@ -53,5 +53,10 @@ pipeline {
                 }
             }
         }
+
+        stage('delete docker images locally') {
+            steps{
+                sh "docker rmi -f \$(docker images -q henrywaldos/jenkins-app)"            }
+        }
     }
 }
