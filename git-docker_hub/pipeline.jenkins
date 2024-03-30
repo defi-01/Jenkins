@@ -39,7 +39,7 @@ pipeline {
         stage('build docker image') {
             steps {
                 dir("python-server-app") {
-                    sh "docker build -t henrywaldos/jenkins-app:0.1 ."
+                    sh "docker build -t henrywaldos/jenkins-app:0.2 ."
                 }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'docker-hub', url: '') {
-                        sh 'docker push henrywaldos/jenkins-app:0.1'
+                        sh 'docker push henrywaldos/jenkins-app:0.2'
                     }
                 }
             }
