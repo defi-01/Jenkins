@@ -1,0 +1,57 @@
+pipeline {
+    agent { label 'ubuntuvm' }
+
+    stages {
+
+        stage('docker version') {
+            steps {
+                sh "uname -a"
+                sh "whoami"
+                sh "docker version"
+            }
+        }
+
+        stage('delete workspace before build starts') {
+            steps {
+                echo "deleting workspace"
+                deleteDir()
+            }
+        }
+
+        stage('checkout') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/defi-01/Python'
+            }
+        }
+
+        stage('test') {
+            steps {
+                dir("python-server-app") {
+                    sh 'ls -la'
+                    sh 'pwd'
+                }
+                sh 'ls -lat'
+                sh 'pwd'
+            }
+        }
+
+        stage('build docker image') {
+            steps {
+                dir("python-server-app") {
+                    sh "docker build -t henrywaldos/jenkins-app:0.1 ."
+                }
+            }
+        }
+
+        stage('push docker image to dockerhub') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'docker-hub', url: '') {
+                        sh 'docker push henrywaldos/jenkins-app:0.1'
+                    }
+                }
+            }
+        }
+    }
+}
